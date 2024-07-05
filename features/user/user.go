@@ -24,3 +24,13 @@ type userRequestData struct {
 func (rd *userRequestData) Bind(r *http.Request) error {
 	return app.AppFromContext(r.Context()).Validate(rd)
 }
+
+func (rd *userRequestData) toModel() User {
+	user := User{
+		Name:     rd.Name + "_suffix",
+		Surname:  rd.Surname,
+		Username: rd.Username,
+	}
+
+	return user
+}

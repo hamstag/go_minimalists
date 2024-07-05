@@ -42,11 +42,16 @@ func (h *UserHandler) Store(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user := User{Name: rd.Name, Surname: rd.Surname, Username: rd.Username}
+	user := rd.toModel()
 
-	h.app.DB().MySql.Create(&user)
+	if err := h.app.DB().MySql.Create(&user).Error; err != nil {
+		render.Render(w, r, httperror.ErrRender(err))
+		return
+	}
 
-	render.JSON(w, r, user.ID)
+	render.JSON(w, r, render.M{
+		"id": user.ID,
+	})
 }
 
 func (h *UserHandler) Show(w http.ResponseWriter, r *http.Request) {
