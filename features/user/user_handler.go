@@ -29,7 +29,7 @@ func (h *UserHandler) Index(w http.ResponseWriter, r *http.Request) {
 
 	users := []User{}
 
-	h.app.DB().MySql.Find(&users)
+	h.app.DB().MySql.Limit(10).Find(&users)
 
 	render.JSON(w, r, users)
 }
