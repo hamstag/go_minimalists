@@ -28,8 +28,6 @@ func (app *App) initRouter() {
 	)
 
 	app.apiRouter = chi.NewMux()
-	app.apiRouter.Use(app.router.Middlewares()...)
-
 	app.router.Mount(app.cfg.APIPrefix, app.apiRouter)
 
 	// init routes
