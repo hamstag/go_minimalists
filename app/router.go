@@ -33,8 +33,8 @@ func (app *App) initRouter() {
 	app.router.Mount(app.cfg.APIPrefix, app.apiRouter)
 
 	// init routes
-	for i := range initRoutes {
-		initRoutes[i](app)
+	for _, fn := range initRoutes {
+		fn(app)
 	}
 }
 

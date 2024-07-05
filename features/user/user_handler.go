@@ -1,6 +1,7 @@
 package user
 
 import (
+	"fmt"
 	"go-minimalists/app"
 	"go-minimalists/util/httperror"
 	"net/http"
@@ -19,6 +20,10 @@ func NewUserHandler(app *app.App) *UserHandler {
 }
 
 func (h *UserHandler) Index(w http.ResponseWriter, r *http.Request) {
+	// get app from context
+	appFromContext := app.AppFromContext(r.Context())
+	fmt.Printf("Address: http://%s\n", appFromContext.Config().Address)
+
 	// eg: redis
 	h.app.DB().Redis.Set(r.Context(), "hello", "Hamstag", time.Second*60)
 
@@ -37,7 +42,11 @@ func (h *UserHandler) Store(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.JSON(w, r, rd)
+	user := User{Name: rd.Name, Surname: rd.Surname, Username: rd.Username}
+
+	h.app.DB().MySql.Create(&user)
+
+	render.JSON(w, r, user.ID)
 }
 
 func (h *UserHandler) Show(w http.ResponseWriter, r *http.Request) {
