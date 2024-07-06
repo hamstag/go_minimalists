@@ -17,13 +17,13 @@ func NewProductHandler(app *app.App) *ProductHandler {
 	return &ProductHandler{app: app}
 }
 
-func (h ProductHandler) Index(w http.ResponseWriter, r *http.Request) {
+func (h *ProductHandler) Index(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, render.M{
 		"message": "Index",
 	})
 }
 
-func (h ProductHandler) Store(w http.ResponseWriter, r *http.Request) {
+func (h *ProductHandler) Store(w http.ResponseWriter, r *http.Request) {
 	rd := &productRequestData{}
 
 	if err := render.Bind(r, rd); err != nil {
@@ -36,7 +36,7 @@ func (h ProductHandler) Store(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (h ProductHandler) Show(w http.ResponseWriter, r *http.Request) {
+func (h *ProductHandler) Show(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
 	if id != "1" {
@@ -49,7 +49,7 @@ func (h ProductHandler) Show(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (h ProductHandler) Update(w http.ResponseWriter, r *http.Request) {
+func (h *ProductHandler) Update(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
 	if id != "1" {
@@ -69,7 +69,7 @@ func (h ProductHandler) Update(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (h ProductHandler) Destroy(w http.ResponseWriter, r *http.Request) {
+func (h *ProductHandler) Destroy(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
 	render.JSON(w, r, render.M{

@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"go-minimalists/middlewares"
 	"net/http"
 	"os"
 	"reflect"
@@ -10,9 +11,6 @@ import (
 	"text/tabwriter"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
-	"github.com/go-chi/cors"
-	"github.com/go-chi/render"
 )
 
 var initRoutes []func(app *App)
@@ -20,7 +18,7 @@ var initRoutes []func(app *App)
 func (app *App) initRouter() {
 	app.router = chi.NewRouter()
 
-	app.router.Use(baseMiddleware)
+	app.router.Use(middlewares.BaseMiddleware)
 
 	app.apiRouter = chi.NewMux()
 	app.router.Mount(app.cfg.APIPrefix, app.apiRouter)
@@ -33,21 +31,6 @@ func (app *App) initRouter() {
 
 func OnInitRoutes(fn func(app *App)) {
 	initRoutes = append(initRoutes, fn)
-}
-
-func baseMiddleware(next http.Handler) http.Handler {
-	middlewares := []func(http.Handler) http.Handler{
-		render.SetContentType(render.ContentTypeJSON),
-		cors.AllowAll().Handler,
-		middleware.RequestID,
-		middleware.RealIP,
-		middleware.Logger,
-		middleware.Compress(5),
-		middleware.Heartbeat("/ping"),
-		middleware.Recoverer,
-	}
-
-	return chi.Chain(middlewares...).Handler(next)
 }
 
 func (app *App) routeList() error {
@@ -67,7 +50,7 @@ func (app *App) routeList() error {
 		for _, mw := range middlewares {
 			pathMiddleware := runtime.FuncForPC(reflect.ValueOf(mw).Pointer()).Name()
 
-			if pathMiddleware != "go-minimalists/app.baseMiddleware" {
+			if pathMiddleware != "go-minimalists/middlewares.BaseMiddleware" {
 				pathMiddleware = replacer.Replace(pathMiddleware)
 				fmt.Fprintf(w, "\t\t⇂ %s\n", pathMiddleware)
 			}

@@ -19,7 +19,7 @@ func NewUserHandler(app *app.App) *UserHandler {
 	return &UserHandler{app: app}
 }
 
-func (h UserHandler) Index(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) Index(w http.ResponseWriter, r *http.Request) {
 	// get app from context
 	appFromContext := app.AppFromContext(r.Context())
 	fmt.Printf("Address: http://%s\n", appFromContext.Config().Address)
@@ -34,7 +34,7 @@ func (h UserHandler) Index(w http.ResponseWriter, r *http.Request) {
 	render.JSON(w, r, users)
 }
 
-func (h UserHandler) Store(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) Store(w http.ResponseWriter, r *http.Request) {
 	rd := &userRequestData{}
 
 	if err := render.Bind(r, rd); err != nil {
@@ -54,7 +54,7 @@ func (h UserHandler) Store(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (h UserHandler) Show(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) Show(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
 	if id != "1" {
@@ -67,7 +67,7 @@ func (h UserHandler) Show(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (h UserHandler) Update(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
 	if id != "1" {
@@ -87,7 +87,7 @@ func (h UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func (h UserHandler) Destroy(w http.ResponseWriter, r *http.Request) {
+func (h *UserHandler) Destroy(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
 	render.JSON(w, r, render.M{
