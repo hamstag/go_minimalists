@@ -66,8 +66,11 @@ func (app *App) routeList() error {
 
 		for _, mw := range middlewares {
 			pathMiddleware := runtime.FuncForPC(reflect.ValueOf(mw).Pointer()).Name()
-			pathMiddleware = replacer.Replace(pathMiddleware)
-			fmt.Fprintf(w, "\t\t⇂ %s\n", pathMiddleware)
+
+			if pathMiddleware != "go-minimalists/app.baseMiddleware" {
+				pathMiddleware = replacer.Replace(pathMiddleware)
+				fmt.Fprintf(w, "\t\t⇂ %s\n", pathMiddleware)
+			}
 		}
 
 		return nil
