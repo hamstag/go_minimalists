@@ -5,7 +5,7 @@ import (
 	"go-minimalists/app"
 	_ "go-minimalists/features/product"
 	_ "go-minimalists/features/user"
-	"go-minimalists/middlewares"
+	"go-minimalists/middleware"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -24,7 +24,7 @@ func init() {
 		})
 
 		r.Group(func(r chi.Router) {
-			r.Use(middlewares.Authenticator(app.JWTAuth()).Handler)
+			r.Use(middleware.Authenticator(app.JWTAuth()).Handler)
 
 			r.Get("/private/hello", func(w http.ResponseWriter, r *http.Request) {
 				_, claims, _ := jwtauth.FromContext(r.Context())

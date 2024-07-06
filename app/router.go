@@ -2,7 +2,7 @@ package app
 
 import (
 	"fmt"
-	"go-minimalists/middlewares"
+	"go-minimalists/middleware"
 	"net/http"
 	"os"
 	"reflect"
@@ -18,7 +18,7 @@ var initRoutes []func(app *App)
 func (app *App) initRouter() {
 	app.router = chi.NewRouter()
 
-	app.router.Use(middlewares.BaseMiddleware)
+	app.router.Use(middleware.BaseMiddleware)
 
 	app.apiRouter = chi.NewMux()
 	app.router.Mount(app.cfg.APIPrefix, app.apiRouter)
@@ -50,7 +50,7 @@ func (app *App) routeList() error {
 		for _, mw := range middlewares {
 			pathMiddleware := runtime.FuncForPC(reflect.ValueOf(mw).Pointer()).Name()
 
-			if pathMiddleware != "go-minimalists/middlewares.BaseMiddleware" {
+			if pathMiddleware != "go-minimalists/middleware.BaseMiddleware" {
 				pathMiddleware = replacer.Replace(pathMiddleware)
 				fmt.Fprintf(w, "\t\t⇂ %s\n", pathMiddleware)
 			}
