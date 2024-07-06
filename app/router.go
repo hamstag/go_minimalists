@@ -3,7 +3,11 @@ package app
 import (
 	"fmt"
 	"net/http"
+	"os"
+	"reflect"
+	"runtime"
 	"strings"
+	"text/tabwriter"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -41,9 +45,18 @@ func OnInitRoutes(fn func(app *App)) {
 }
 
 func (app *App) routeList() error {
+	w := tabwriter.NewWriter(os.Stdout, 0, 0, 4, ' ', 0)
+	fmt.Fprintf(w, "%s\t%s\t%s\n", "Method", "Route", "Handler")
+	fmt.Fprintf(w, "%s\t%s\t%s\n", "------", "-----", "-------")
+
 	walkFunc := func(method string, route string, handler http.Handler, middleware ...func(http.Handler) http.Handler) error {
 		route = strings.Replace(route, "/*/", "/", -1)
-		fmt.Printf("%s %s %s\n", method, strings.Repeat(" ", 7-len(method)), route)
+		pathHandler := runtime.FuncForPC(reflect.ValueOf(handler).Pointer()).Name()
+		replacer := strings.NewReplacer("go-minimalists", "")
+		pathHandler = replacer.Replace(pathHandler)
+
+		fmt.Fprintf(w, "%s\t%s\t%s\n", method, route, pathHandler)
+
 		return nil
 	}
 
@@ -51,6 +64,9 @@ func (app *App) routeList() error {
 		fmt.Printf("Logging err: %s\n", err.Error())
 		return err
 	}
+
+	fmt.Fprintln(w)
+	w.Flush()
 
 	return nil
 }

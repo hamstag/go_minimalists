@@ -14,7 +14,7 @@ import (
 
 func init() {
 	app.OnInitRoutes(func(app *app.App) {
-		r := app.APIRouter()
+		r := app.Router()
 
 		r.Get("/hello", func(w http.ResponseWriter, r *http.Request) {
 			render.JSON(w, r, render.M{
