@@ -58,6 +58,7 @@ require (
 
 require (
 	github.com/ajg/form v1.5.1 // indirect
+	github.com/alexedwards/argon2id v1.0.0
 	github.com/go-chi/chi/v5 v5.0.14
 	github.com/go-chi/cors v1.2.1
 	github.com/go-chi/jwtauth/v5 v5.3.1

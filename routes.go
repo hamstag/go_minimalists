@@ -6,6 +6,7 @@ import (
 	_ "go-minimalists/features/product"
 	_ "go-minimalists/features/user"
 	"go-minimalists/middleware"
+	"go-minimalists/util/security"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -18,6 +19,12 @@ func init() {
 		r := app.Router()
 
 		r.Get("/hello", func(w http.ResponseWriter, r *http.Request) {
+			hash := security.HashPassword("hello hamstag")
+			fmt.Printf("%s\n", hash)
+
+			match := security.CheckPasswordHash("hello hamstag", hash)
+			fmt.Println(match)
+
 			render.JSON(w, r, render.M{
 				"message": "Hello! Hamstag.",
 			})
