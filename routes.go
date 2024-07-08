@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"go-minimalists/app"
 	_ "go-minimalists/features/product"
@@ -19,11 +20,27 @@ func init() {
 		r := app.Router()
 
 		r.Get("/hello", func(w http.ResponseWriter, r *http.Request) {
+			// Hash
 			hash := security.HashPassword("hello hamstag")
-			fmt.Printf("%s\n", hash)
+			fmt.Printf("hash: %s\n", hash)
 
 			match := security.CheckPasswordHash("hello hamstag", hash)
-			fmt.Println(match)
+			fmt.Printf("match: %t\n", match)
+
+			// Encryption
+			text := map[string]interface{}{
+				"hello":    "Hamstag",
+				"sabaidee": "ສະບາຍດີ",
+				"number":   1.23,
+			}
+
+			textString, _ := json.Marshal(text)
+
+			encrypted := security.Encrypt(string(textString), app.Config().EncryptionSecret)
+			fmt.Printf("encrypted: %s\n", encrypted)
+
+			decrypted := security.Decrypt(encrypted, app.Config().EncryptionSecret)
+			fmt.Printf("decrypted: %s\n", decrypted)
 
 			render.JSON(w, r, render.M{
 				"message": "Hello! Hamstag.",
