@@ -19,6 +19,10 @@ func init() {
 	app.OnInitRoutes(func(app *app.App) {
 		r := app.Router()
 
+		r.Get("/sabaidee", func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte("sabaidee hamstag"))
+		})
+
 		r.Get("/hello", func(w http.ResponseWriter, r *http.Request) {
 			// Hash
 			hash := security.HashPassword("hello hamstag")
